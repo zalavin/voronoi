@@ -12,7 +12,7 @@ class PQ
 
   # O(n)
   def delete_max
-    pq.delete(pq.max_by(&:y))
+    pq.delete(pq.max_by { |e| e.point.y })
   end
 
   # O(n)
