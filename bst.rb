@@ -3,7 +3,11 @@
 # Balanced binary search tree.
 # Stores in leaves points, whereas on nodes — two points.
 class BST
-  Node = Struct.new(:point, :left, :right)
+  Node = Struct.new(:point, :left, :right, :parent) do
+    def leaf?
+      left.nil? && right.nil?
+    end
+  end
 
   def initialize
     @root = nil
@@ -21,10 +25,18 @@ class BST
   def insert_node(node, point)
     return Node.new(point) if node.nil?
 
+    # until node.leaf?
+    #   node = point.x > node.point.x ? node.left : node.right
+    # end
+
     if point.x > node.point.x
-      node.right = insert_node(node.right, point)
+      tmp = insert_node(node.right, point)
+      tmp.parent = node
+      node.right = tmp
     else
-      node.left = insert_node(node.left, point)
+      tmp = insert_node(node.left, point)
+      tmp.parent = node
+      node.left = tmp
     end
 
     node
