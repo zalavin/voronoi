@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
-Event = Struct.new(:point)
+Event = Struct.new(:point) do
+  include Comparable
+
+  def <=>(other)
+    point <=> other.point
+  end
+end
 
 class SiteEvent < Event
   def type
