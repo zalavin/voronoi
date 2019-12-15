@@ -15,7 +15,27 @@ class BST
 
   # To insert a new point we find closest x coordinate.
   def insert(point)
-    @root = insert_node(root, point)
+    if @root.nil?
+      @root = insert_node(root, point)
+    else
+      node = insert_node(root, point)
+      # parent = node.parent
+      #
+      # if parent.left.nil?
+      #   dup = Node.new(point)
+      #   dup.parent = parent
+      #   parent.left = dup
+      # elsif parent.right.nil?
+      #   dup = Node.new(point)
+      #   dup.parent = parent
+      #   parent.right = dup
+      # end
+      #
+      # while parent
+      #   parent.right.point = parent.point
+      #   parent.point = parent.left.point
+      # end
+    end
   end
 
   private
@@ -25,20 +45,16 @@ class BST
   def insert_node(node, point)
     return Node.new(point) if node.nil?
 
-    # until node.leaf?
-    #   node = point.x > node.point.x ? node.left : node.right
-    # end
-
     if point.x > node.point.x
-      tmp = insert_node(node.right, point)
-      tmp.parent = node
-      node.right = tmp
+      current = insert_node(node.right, point)
+      current.parent = node
+      node.right = current
     else
-      tmp = insert_node(node.left, point)
-      tmp.parent = node
-      node.left = tmp
+      current = insert_node(node.left, point)
+      current.parent = node
+      node.left = current
     end
 
-    node
+    current
   end
 end
