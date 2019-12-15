@@ -22,21 +22,18 @@ class Voronoi
 
       case p.type
       when 'site'
+        # Add the event and breakpoints to BST.
+        # Find by x coordinate.
+
+        # Add new edge in DCEL.
+
+        # Delete false alarms for circle events.
+
+        # Add potential circle to queue.
+        # Check three possible circles with our new site in T.
+
         # Find arcs containing point p.
         # @arcs.find_occurence(p)
-
-        # Create new boundary rays with point p.
-        
-        # Replace arcs.
-        
-        # Delete from @events any intersection between (r,q) and (q,s).
-        # @events.delete(intersections)
-
-        # Insert into @events any intersection between (r,q) and (p,q).
-        # @events.push(intersections)
-        
-        # Insert into @events any intersection between (r,q) and (p,q).
-        # @events.push(intersections)
       when 'circle'
         # Create new boundary ray (q,s).
         
