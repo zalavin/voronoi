@@ -52,26 +52,15 @@ class Voronoi
           .map(&:event_point)
           .map { |point| @events.push(CircleEvent.new(point)) }
       when 'circle'
-        # Create new boundary ray (q,s).
+        # Add vertice p to DCEL.
+        @dcel.add_vertice(p)
 
-        # Replace (q,r) with (q,s) in @arcs.
+        # Delete disappearing arcs by point.
         
-        # Delete from @events any intersection between (u,q) and (q,r).
-        # @events.delete(intersections)
+        # Delete false alarms for circle events.
 
-        # Delete from @events any intersection between (r,s) and (s,v).
-        # @events.delete(intersections)
-
-        # Insert into @events any intersection between (u,q) and (q,s).
-        # @events.push(intersections)
-
-        # Insert into @events any intersection between (q,s) and (s,v).
-        # @events.push(intersections)
-
-        # Add p to vertices.
-        @vertices.push(p)
-
-        # Output segments (q,r) and (r,s).
+        # Check three possible circles with our new site in T.
+        # And add it to queue.
       end
     end
 
