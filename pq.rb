@@ -1,31 +1,65 @@
 # frozen_string_literal: true
 
 class PQ
-  def intialize
-    @pq = []
+  def initialize
+    @a = []
+    @entries = {}
   end
 
-  # O(1)
-  def push(point)
-    pq.push(point)
+  def insert(point)
+    return if entries.has_key?(point)
+
+    n = a.length
+    a[n] = point
+    entries[point] = point
+    siftup(n)
   end
 
-  # O(n)
-  def delete_max
-    pq.delete(pq.max_by { |e| e.point.y })
+  def extract_max
+    fail 'EmptyPQ' if empty?
+
+    max = a[0]
+    a[0] = a.pop
+    siftdown(0)
+    entries.delete(max)
+    max
   end
 
-  # O(n)
   def delete(point)
-    pq.delete(pq.find { |p| p == point })
+    entries.delete(point)
   end
 
-  # O(1)
   def empty?
-    pq.any?
+    entries.none?
   end
 
   private
 
-  attr_reader :pq
+  attr_reader :a, :entries
+
+  def siftup(i)
+    while i > 0 && a[i] > a[(i - 1) / 2]
+      a[i], a[(i - 1) / 2] = a[(i - 1) / 2], a[i]
+      i = (i - 1) / 2
+    end
+  end
+
+  def siftdown(i)
+    while 2 * i + 1 > a.length
+      left = 2 * i + 1
+      right = 2 * i + 2
+      j = left
+
+      if right < a.length && a[right] < a[left]
+        j = right
+      end
+
+      if a[i] <= a[j]
+        return
+      end
+
+      a[i], a[j] = a[j], a[i]
+      i = j
+    end
+  end
 end
