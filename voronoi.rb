@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'bst'
 require_relative 'point'
 require_relative 'pq'
 require_relative 'event'
@@ -13,35 +14,51 @@ class Voronoi
       .map { |s| Point.new(s[0], s[1]) }
       .each { |s| @events.push(SiteEvent.new(s)) }
     # Initialize BST to store beach line.
-    # @arcs = BST.new
+    @arcs = BST.new
+    # Initialize DCEL.
+    @dcel = DCEL.new
   end
 
   def call
     while !@events.empty?
-      p = @events.delete_max
+      e = @events.delete_max
 
-      case p.type
+      case e.type
       when 'site'
-        # Add the event and breakpoints to BST.
-        # Find by x coordinate.
+        # Add the event and breakpoints to BST (by x coordinate).
+        node = @arcs.insert(e.point)
 
         # Add new edge in DCEL.
+        @dcel.add_edge(node)
+
+        # Get neighbours of node to delete false alarms and check potential circle events.
+        l1 = node.left_leaf
+        l2 = l1.left_leaf
+        r1 = node.right_leaf
+        r2 = r1.right_leaf
 
         # Delete false alarms for circle events.
+        [[l1,l2,r1],[l2,r1,r2]]
+          .map { |nodes| Circle.new(nodes.map(&:point)) }
+          .select(&:circle_event?)
+          .map(&:event_point)
+          .map { |point| @events.delete(CircleEvent.new(point)) }
 
-        # Add potential circle to queue.
         # Check three possible circles with our new site in T.
-
-        # Find arcs containing point p.
-        # @arcs.find_occurence(p)
+        # And add it to queue.
+        [[l1, l2, node], [l2, node, r1], [node, r1, r2]]
+          .map { |nodes| Circle.new(nodes.map(&:point)) }
+          .select(&:circle_event?)
+          .map(&:event_point)
+          .map { |point| @events.push(CircleEvent.new(point)) }
       when 'circle'
         # Create new boundary ray (q,s).
-        
+
         # Replace (q,r) with (q,s) in @arcs.
         
         # Delete from @events any intersection between (u,q) and (q,r).
         # @events.delete(intersections)
-        
+
         # Delete from @events any intersection between (r,s) and (s,v).
         # @events.delete(intersections)
 
@@ -52,8 +69,8 @@ class Voronoi
         # @events.push(intersections)
 
         # Add p to vertices.
-        # @vertices.push(p)
-        
+        @vertices.push(p)
+
         # Output segments (q,r) and (r,s).
       end
     end
